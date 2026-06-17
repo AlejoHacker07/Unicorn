@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Campo y Jardín | Agro UNICORN</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<style>
+  /* =========================================
+     VARIABLES Y MODO OSCURO (Sincronizado)
+     ========================================= */
+  :root {
+    --bg: #f4f6f8;
+    --white: #ffffff;
+    --muted: #7f8c8d;
+    --accent: #2e7d32;      
+    --accent-2: #f57c00;    
+    --card-shadow: 0 15px 35px rgba(0,0,0,0.06);
+    --card-shadow-hover: 0 25px 50px rgba(0,0,0,0.12);
+    --radius: 24px;
+    --max-width: 1200px;
+    --brand-blue: #0a2342;
+    --brand-accent: #f57c00;
+    --header-h: 80px;
+    --hero-img: url('https://humanidades.com/wp-content/uploads/2016/04/campo-1-e1558303226877.jpg');
+  }
+
+  html.dark-mode, body.dark-mode {
+    --bg: #121212;
+    --white: #1e1e1e;
+    --text: #ffffff;
+    --muted: #aaaaaa;
+    --brand-blue: #66b2ff;
+    --card-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    --card-shadow-hover: 0 25px 50px rgba(0,0,0,0.6);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--bg);
+    color: var(--text, #222);
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  html.dark-mode body, html.dark-mode h1, html.dark-mode h2, html.dark-mode h3, 
+  html.dark-mode p, html.dark-mode span, html.dark-mode label, html.dark-mode .meta, 
+  html.dark-mode .resultado, html.dark-mode .no-results { color: var(--text) !important; }
+
+  /* =========================================
+     HEADER FLOTANTE PREMIUM
+     ========================================= */
+  header {
+    background: rgba(255, 255, 255, 0.75) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    padding: 10px 25px; display: flex; align-items: center; justify-content: space-between;
+    border: 1px solid rgba(255,255,255,0.5); position: fixed; top: 15px; left: 0; right: 0;
+    margin: 0 auto; width: 95%; z-index: 1500; transition: all 0.4s ease; max-width: 1100px;
+    border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  }
+  body.dark-mode header { background: rgba(20, 20, 20, 0.75) !important; border-color: rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .logo { display: flex; align-items: center; cursor: pointer; transition: transform 0.3s;}
+  .logo:hover { transform: scale(1.05); }
+  .logo img { width: 42px; height: 42px; border-radius: 50%; margin-right: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  .logo span { font-weight: 800; color: #0e008b; letter-spacing: 0.5px; font-size: 1.15rem; }
+  body.dark-mode .logo span { color: #66b2ff !important; }
+
+  nav { display: flex; align-items: center; gap: 20px; }
+  nav a { color: var(--text, #111); text-decoration: none; font-weight: 600; font-size: 0.95rem; position: relative; transition: color 0.3s ease; padding: 5px 0; margin-left: 0 !important; }
+  nav a::after { content: ''; position: absolute; width: 0%; height: 2px; bottom: -2px; left: 50%; transform: translateX(-50%); background-color: var(--accent-2); transition: width 0.3s ease; border-radius: 2px; }
+  nav a:hover::after { width: 100%; }
+  nav a:hover { color: var(--accent-2); }
+
+  #carritoLink { background: linear-gradient(135deg, rgba(245,124,0,0.1), rgba(245,124,0,0.05)); padding: 10px 20px; border-radius: 30px; border: 1px solid rgba(245,124,0,0.2); transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; }
+  html.dark-mode #carritoLink { background: rgba(245,124,0,0.15); border-color: rgba(245,124,0,0.3); }
+  #carritoLink:hover { background: var(--accent-2); color: white !important; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(245, 124, 0, 0.3); }
+  #carritoLink:hover::after { display: none; } 
+  #carritoLink .icono-carrito { font-size: 1.2rem; transition: transform 0.3s ease; }
+  #carritoLink:hover .icono-carrito { transform: scale(1.1) rotate(-10deg); }
+
+  #contadorCarrito { position: absolute; top: -6px; right: -6px; background: linear-gradient(135deg, #ff0000, #cc0000); color: #fff; font-size: 0.75rem; font-weight: 800; border-radius: 999px; min-width: 22px; height: 22px; padding: 0 6px; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(204, 0, 0, 0.4); border: 2px solid var(--white); transition: opacity 0.25s ease, transform 0.25s ease; opacity: 0; }
+  body.dark-mode #contadorCarrito { border-color: #1e1e1e; }
+  #contadorCarrito.mostrar { display: flex; opacity: 1; animation: burbujaPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  @keyframes burbujaPop { 0% { transform: scale(1); } 40% { transform: scale(1.3); } 100% { transform: scale(1); } }
+  @keyframes vibrarCarrito { 0% { transform: rotate(0deg); } 25% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } 75% { transform: rotate(-6deg); } 100% { transform: rotate(0deg); } }
+
+  .dark-toggle { background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.1); border-radius: 50%; padding: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; margin-left: 5px !important; color: var(--text, #111); transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  .dark-toggle:hover { background: var(--accent-2); color: white !important; border-color: var(--accent-2); transform: rotate(15deg) scale(1.1);}
+  body.dark-mode .dark-toggle { background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.3);}
+  
+  @media (max-width: 768px) { header { padding: 10px 15px; margin: 0 auto; width: 95%; border-radius: 30px; } nav { gap: 10px; } nav a { font-size: 0.85rem; } .logo span { display: none; } }
+
+  /* =========================================
+     HERO MODO VIDRIO APPLE (GLASSMORPHISM)
+     ========================================= */
+  .hero { 
+    position: relative; height: 45vh; min-height: 380px; 
+    background: var(--hero-img) center/cover no-repeat; 
+    display: flex; align-items: center; justify-content: center; 
+    margin: 110px auto 30px; width: 95%; max-width: 1200px; 
+    border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+    overflow: hidden; 
+  }
+  
+  .hero-glass { 
+    position: relative; z-index: 2; text-align: center; max-width: 750px; width: 90%;
+    background: rgba(250, 250, 250, 0.4); 
+    backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6); 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6); 
+    padding: 40px 30px; border-radius: 24px; color: #111; 
+  }
+  html.dark-mode .hero-glass {
+    background: rgba(30, 30, 30, 0.5); 
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); 
+    color: #fff;
+  }
+  .hero-glass h1 { font-size: 3rem; margin: 0 0 10px; font-weight: 800; }
+  .hero-glass p { font-size: 1.15rem; margin: 0; font-weight: 500; }
+
+  /* =========================================
+     LAYOUT ESTRUCTURA PRINCIPAL
+     ========================================= */
+  .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+  .layout { display: grid; grid-template-columns: 1fr 320px; gap: 40px; align-items: start; }
+  @media (max-width:980px){ .layout{grid-template-columns:1fr} }
+
+  /* =========================================
+     FILTROS (PANEL DERECHO)
+     ========================================= */
+  aside.filtros { 
+    position: sticky; top: calc(var(--header-h) + 30px); padding: 30px; 
+    border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); 
+    background: var(--white); box-shadow: 0 10px 30px rgba(0,0,0,0.04); transition: 0.3s; 
+  }
+  html.dark-mode aside.filtros { border-color: rgba(255,255,255,0.05); background: #1e1e1e;}
+  
+  aside.filtros h3 { color: var(--brand-blue); margin-top: 0; margin-bottom: 20px; font-size: 1.3rem; font-weight: 800;}
+  .filtro-group { margin-bottom: 18px; }
+  .filtro-group label { display: block; font-weight: 700; color: var(--muted); margin-bottom: 8px; font-size: .9rem; margin-left: 5px;}
+  
+  .filtro-group select, .filtro-group input { 
+    width: 100%; padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1); 
+    background: rgba(0,0,0,0.02); font-weight: 600; font-family: inherit; font-size: 0.95rem;
+    color: var(--text, #222); cursor: pointer; transition: all 0.3s ease;
+  }
+  html.dark-mode .filtro-group select, html.dark-mode .filtro-group input { background: #2a2a2a; border-color: rgba(255,255,255,0.1); }
+  .filtro-group select:focus, .filtro-group input:focus { outline: none; border-color: var(--accent-2); box-shadow: 0 0 0 3px rgba(245, 124, 0, 0.1); }
+
+  .filtros-actions { display: flex; gap: 12px; margin-top: 25px; }
+  .btn-aplicar { flex: 1; background: linear-gradient(135deg, var(--accent-2), #ff8c00); color: #fff; border: 0; padding: 14px; border-radius: 30px; font-weight: 800; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(245, 124, 0, 0.2);}
+  .btn-aplicar:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245, 124, 0, 0.4); }
+  .btn-limpiar { flex: 1; background: rgba(0,0,0,0.05); color: var(--text); border: 1px solid transparent; padding: 14px; border-radius: 30px; font-weight: 800; cursor: pointer; transition: all 0.3s;}
+  html.dark-mode .btn-limpiar { background: rgba(255,255,255,0.1); }
+  .btn-limpiar:hover { background: rgba(0,0,0,0.1); transform: translateY(-2px); }
+
+  /* =========================================
+     PRODUCTOS GRID Y TARJETAS "LIQUID GLASS"
+     ========================================= */
+  .productos-section h2 { font-size: 2rem; color: var(--brand-blue); margin-top: 0; margin-bottom: 25px; font-weight: 800;}
+  .controls-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; gap: 12px; }
+  .resultado { color: var(--muted); font-weight: 600; font-size: 1.05rem;}
+  .orden select { padding: 10px 15px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1); font-weight: 600; font-family: inherit; background: var(--white); color: var(--text); outline: none; cursor: pointer; transition: 0.3s;}
+  html.dark-mode .orden select { background: #1e1e1e; border-color: rgba(255,255,255,0.1); }
+
+  .productos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; position: relative; }
+  
+  /* NUEVO EFECTO: Liquid Glass Apple */
+  .producto-card { 
+    background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.3));
+    backdrop-filter: blur(30px) saturate(200%); -webkit-backdrop-filter: blur(30px) saturate(200%);
+    border-radius: 24px; 
+    border: 1px solid rgba(255,255,255,0.5); 
+    /* El truco del volumen: inset shadow brillante arriba, sombra suave abajo */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.05), inset 0 2px 5px rgba(255,255,255,0.8); 
+    overflow: hidden; display: flex; flex-direction: column; 
+    cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    padding: 12px; 
+  }
+  html.dark-mode .producto-card { 
+    background: linear-gradient(135deg, rgba(40,40,40,0.6), rgba(20,20,20,0.4)); 
+    border-color: rgba(255,255,255,0.1); 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 2px 5px rgba(255,255,255,0.05);
+  }
+  
+  .producto-card:hover { 
+    transform: translateY(-10px) scale(1.02); 
+    box-shadow: 0 25px 45px rgba(0,0,0,0.1), inset 0 2px 8px rgba(255,255,255,0.9); 
+    border-color: rgba(255,255,255,0.8); 
+  }
+  html.dark-mode .producto-card:hover {
+    box-shadow: 0 25px 45px rgba(0,0,0,0.5), inset 0 2px 8px rgba(255,255,255,0.15); 
+    border-color: rgba(255,255,255,0.25);
+  }
+  
+  .producto-media { 
+    height: 240px; 
+    background: transparent; 
+    position: relative; overflow: hidden; 
+    padding: 25px; 
+  }
+  .producto-media img { 
+    width: 100%; height: 100%; object-fit: contain; 
+    transition: transform 0.4s ease; 
+  }
+  .producto-card:hover .producto-media img { transform: scale(1.1); }
+  
+  .producto-badge { position: absolute; top: 10px; left: 10px; background: #e63946; color: #fff; padding: 6px 12px; border-radius: 20px; font-weight: 800; font-size: 0.85rem; box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3); z-index: 2;}
+  .eco-badge { position: absolute; top: 10px; right: 10px; background: #2e7d32; color: #fff; padding: 6px 12px; border-radius: 20px; font-weight: 800; font-size: 0.85rem; box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3); z-index: 2;}
+
+  .producto-body { padding: 10px 10px 15px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .producto-body h3 { font-size: 1.15rem; color: var(--text); font-weight: 800; margin: 0; line-height: 1.3;}
+  .meta { color: var(--muted); font-size: 0.85rem; font-weight: 500;}
+  
+  .precio-line { margin-top: auto; display: flex; flex-direction: column; gap: 2px; margin-bottom: 15px; }
+  .precio-original { color: var(--muted); text-decoration: line-through; font-weight: 600; font-size: 0.9rem; }
+  .precio-oferta { color: var(--accent-2); font-weight: 800; font-size: 1.5rem; }
+  
+  .add-wrap { display: flex; justify-content: center; }
+  .add-to-cart { width: 100%; background: rgba(245,124,0,0.1); color: var(--accent-2); border-radius: 14px; padding: 12px; border: 0; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;}
+  html.dark-mode .add-to-cart { background: rgba(245,124,0,0.15); }
+  .producto-card:hover .add-to-cart { background: var(--accent-2); color: #fff; box-shadow: 0 4px 15px rgba(245, 124, 0, 0.3); }
+
+  .no-results { padding: 50px; text-align: center; color: var(--muted); font-weight: 800; font-size: 1.2rem; background: rgba(0,0,0,0.02); border-radius: 20px; }
+
+  /* spinner */
+  .spinner-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.7); backdrop-filter: blur(4px); z-index: 30; border-radius: 20px; }
+  html.dark-mode .spinner-overlay { background: rgba(30,30,30,0.7); }
+  .spinner { width: 50px; height: 50px; border-radius: 50%; border: 4px solid rgba(245, 124, 0, 0.2); border-top-color: var(--accent-2); animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* =========================================
+     MODAL "ESPEJO APPLE" MÁS PEQUEÑO Y ELEGANTE
+     ========================================= */
+  .modal { 
+    display: none; position: fixed; inset: 0; z-index: 3000; 
+    align-items: center; justify-content: center; padding: 20px; 
+    background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); 
+  }
+  .modal.show { display: flex; animation: fadeInModal 0.3s ease;}
+  @keyframes fadeInModal { from {opacity: 0;} to {opacity: 1;} }
+  
+  .modal-card { 
+    background: rgba(250, 250, 250, 0.65); 
+    backdrop-filter: blur(25px) saturate(200%); -webkit-backdrop-filter: blur(25px) saturate(200%);
+    border: 1px solid rgba(255,255,255,0.8); 
+    box-shadow: 0 25px 50px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.7);
+    border-radius: 28px; padding: 35px; 
+    max-width: 800px; 
+    width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; position: relative; 
+  }
+  html.dark-mode .modal-card { 
+    background: rgba(30, 30, 30, 0.65); border-color: rgba(255,255,255,0.15); 
+    box-shadow: 0 25px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); 
+  }
+  
+  .modal-close { position: absolute; right: 20px; top: 20px; background: transparent; border: 0; font-size: 1.8rem; cursor: pointer; color: var(--text); opacity: 0.6; transition: 0.3s;}
+  .modal-close:hover { opacity: 1; transform: rotate(90deg); color: var(--accent-2); }
+  
+  .modal-main { display: flex; flex-direction: column; gap: 15px;}
+  .modal-main img { 
+    width: 100%; height: 300px; object-fit: contain; 
+    background: transparent; padding: 10px; 
+  }
+  
+  .thumbs { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;}
+  .thumbs img { width: 60px; height: 60px; object-fit: contain; border-radius: 12px; cursor: pointer; border: 2px solid transparent; background: rgba(255,255,255,0.4); padding: 5px; transition: 0.3s;}
+  html.dark-mode .thumbs img { background: rgba(0,0,0,0.3); }
+  .thumbs img.selected { border-color: var(--accent-2); transform: translateY(-3px); }
+  
+  .modal-info { display: flex; flex-direction: column; justify-content: center;}
+  .modal-info h2 { color: var(--brand-blue); margin-top: 0; margin-bottom: 10px; font-size: 1.8rem; font-weight: 800; line-height: 1.2;}
+  .modal-info p { color: var(--text); margin-bottom: 15px; font-size: 1rem; line-height: 1.5;}
+  .modal-info .meta { font-size: 0.9rem; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(0,0,0,0.1); }
+  html.dark-mode .modal-info .meta { border-bottom-color: rgba(255,255,255,0.1); }
+  
+  .modal-info .modal-price { color: var(--accent-2); font-weight: 900; font-size: 2.2rem; margin-bottom: 25px; }
+  .modal-info .modal-add { background: var(--accent-2); color: #fff; padding: 16px 25px; border: 0; border-radius: 30px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 6px 15px rgba(245, 124, 0, 0.3);}
+  .modal-info .modal-add:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(245, 124, 0, 0.5); }
+
+  @media (max-width:800px){ .modal-card{grid-template-columns:1fr; max-width:500px} .modal-main img{height:220px} }
+
+  /* =========================================
+     CHAT ASISTENTE CON VOZ
+     ========================================= */
+  #chat-toggle { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, var(--accent-2), #ff8c00); color: white; padding: 16px; border-radius: 50%; cursor: pointer; font-size: 24px; box-shadow: 0 6px 16px rgba(245, 124, 0, 0.4); z-index: 9999; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); animation: pulseChat 2s infinite; }
+  @keyframes pulseChat { 0% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(245, 124, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0); } }
+  #chat-toggle:hover { transform: scale(1.15) rotate(-10deg); animation: none;}
+  
+  #chat-container { position: fixed; bottom: 90px; right: 20px; width: 350px; height: 500px; background: rgba(255,255,255,0.9); backdrop-filter: blur(15px); border-radius: 20px; display: none; flex-direction: column; box-shadow: 0 15px 35px rgba(0,0,0,0.2); overflow: hidden; z-index: 9999; border: 1px solid rgba(255,255,255,0.5); }
+  html.dark-mode #chat-container { background: rgba(30,30,30,0.9); border-color: rgba(255,255,255,0.1); }
+  
+  #chat-header { background: linear-gradient(135deg, var(--accent-2), #ff8c00); color: white; padding: 18px 20px; font-weight: 700; display: flex; justify-content: space-between; align-items:center; font-size: 1rem; }
+  #chat-messages { flex: 1; padding: 20px; overflow-y: auto; font-size: 0.95rem; display: flex; flex-direction: column; gap: 10px;}
+  .msg { padding: 12px 16px; border-radius: 16px; max-width: 85%; line-height: 1.5; word-wrap: break-word; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
+  .msg.user { background: var(--accent-2); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .msg.bot { background: var(--bg); color: var(--text); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid rgba(0,0,0,0.03); }
+  html.dark-mode .msg.bot { background: #2a2a2a; border-color: transparent; }
+  
+  #chat-input-area { border-top: 1px solid rgba(0,0,0,0.05); display:flex; align-items: center; padding: 10px 15px; background: transparent; }
+  html.dark-mode #chat-input-area { border-color: rgba(255,255,255,0.05); }
+  #chat-input { flex: 1; border: none; padding: 10px; outline: none; background: rgba(0,0,0,0.03); color: var(--text); font-family: inherit; border-radius: 20px; margin-right: 10px;}
+  html.dark-mode #chat-input { background: rgba(255,255,255,0.05); }
+  #chat-input:focus { background: rgba(0,0,0,0.06); }
+  
+  #chat-mic { background: transparent; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 0 8px; transition: color 0.2s, transform 0.2s;}
+  #chat-mic:hover { color: #e74c3c; transform: scale(1.1); }
+  #chat-mic.listening { color: #e74c3c; animation: pulse-mic 1.5s infinite; }
+  #chat-send { background: var(--accent-2); border: none; color: white; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(245, 124, 0, 0.3);}
+  #chat-send:hover { transform: scale(1.1); }
+  
+  .typing { display: flex; align-items: center; gap: 5px; padding: 14px 18px; background: var(--bg); border-radius: 16px; align-self: flex-start; border-bottom-left-radius: 4px; }
+  html.dark-mode .typing { background: #2a2a2a; }
+  .dot { width: 7px; height: 7px; background: var(--muted); border-radius: 50%; animation: blink 1.4s infinite both; }
+  .dot:nth-child(1) { animation-delay: -0.32s; }
+  .dot:nth-child(2) { animation-delay: -0.16s; }
+  @keyframes blink { 0%, 80%, 100% { transform: scale(0.3); opacity: 0.5;} 40% { transform: scale(1); opacity: 1;} }
+
+  /* =========================================
+     FOOTER RENOVADO PREMIUM
+     ========================================= */
+  footer.footer { background: linear-gradient(180deg, #1a1a1a, #000000); color: #aaa; padding: 80px 20px 30px; font-size: 0.95rem; border-top: 4px solid var(--accent-2); margin-top: 60px;}
+  footer.footer h4 { color: #fff; font-size: 1.2rem; font-weight: 800; position: relative; padding-bottom: 15px; margin-bottom: 25px;}
+  footer.footer h4::after { content: ''; position: absolute; left: 0; bottom: 0; width: 40px; height: 3px; background: var(--accent-2); border-radius: 2px;}
+  footer.footer ul { list-style: none; padding: 0; margin: 0; }
+  footer.footer ul li { margin-bottom: 12px; }
+  footer.footer a { color: #aaa; text-decoration: none; transition: all 0.3s ease; display: inline-block;}
+  footer.footer a:hover { color: var(--accent-2) !important; transform: translateX(5px); }
+  .footer-social a { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+  .footer-social a:hover { background: var(--accent-2); transform: translateY(-5px); box-shadow: 0 5px 15px rgba(245, 124, 0, 0.4);}
+  .footer-social img { width: 22px !important; filter: brightness(0) invert(1) !important; transition: all 0.3s;}
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 80px; right: 20px; background: var(--accent-2); color: white; padding: 14px 22px; border-radius: 30px; box-shadow: 0 6px 20px rgba(245, 124, 0, 0.3); font-weight: 800; z-index: 9999; opacity: 0; transition: opacity 0.2s; font-size: 1rem;}
+</style>
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header>
+    <div class="logo" onclick="location.href='UNICORN.html'">
+      <img src="https://agro.unicorn.com.co/web/image/16724/20200424%20auls_planobordeazul_v1.png" alt="Logo UNICORN" />
+      <span>AGRO UNICORN</span>
+    </div>
+    <nav aria-label="Navegación principal">
+      <a href="productos.html">Productos</a>
+      <a href="piezas-accesorios.html">Piezas y Accesorios</a>
+      <a href="carrito.html" id="carritoLink" aria-label="Ver carrito">
+        <span class="icono-carrito">🛒</span>
+        <span style="font-weight:700;">Carrito</span>
+        <span id="contadorCarrito" aria-live="polite">0</span>
+      </a>
+      <button class="dark-toggle" onclick="toggleDark()" title="Modo Oscuro">🌙</button>
+    </nav>
+  </header>
+
+  <!-- ================= HERO MODO VIDRIO APPLE ================= -->
+  <section class="hero" role="banner" aria-label="Banner">
+    <div class="hero-glass">
+      <h1 id="heroTitle">Campo y Jardín</h1>
+      <p id="heroSubtitle">Equipos robustos y confiables para el mantenimiento agrícola y del hogar.</p>
+    </div>
+  </section>
+
+  <!-- ================= LAYOUT PRINCIPAL ORIGINAL ================= -->
+  <div class="container">
+    <div class="layout">
+      
+      <!-- CONTENIDO (PRODUCTOS) A LA IZQUIERDA -->
+      <main>
+        <section class="productos-section" aria-live="polite">
+          
+          <div class="controls-row">
+            <div class="resultado" id="resultadoCount">Mostrando 0 productos</div>
+            <div class="orden">
+              <label style="display:none">Orden</label>
+              <select id="orden" aria-label="Ordenar productos">
+                <option value="relevancia">Relevancia</option>
+                <option value="menor">Precio: menor a mayor</option>
+                <option value="mayor">Precio: mayor a menor</option>
+              </select>
+            </div>
+          </div>
+
+          <h2>Productos destacados</h2>
+
+          <div id="productosGrid" class="productos-grid">
+            
+            <!-- TARJETAS CON EFECTO LIQUID GLASS -->
+            <article class="producto-card"
+              data-titulo="Ahoyador Beaver AG52"
+              data-marca="Beaver"
+              data-tipo="Ahoyador"
+              data-motor="Gasolina"
+              data-cilindraje="51.7"
+              data-precio-original="1071000"
+              data-precio-oferta="1071000"
+              data-disponible="true"
+              data-eco="false"
+              data-terreno="llanura"
+              data-imgs="https://agro.unicorn.com.co/web/image/product.template/11892/image?unique=a5fc78f"
+              data-desc="Potente y confiable, diseñado para perforar suelos con rapidez y precisión. Ideal para instalar postes, cercas o plantar árboles.">
+              <div class="producto-media"></div>
+              <div class="producto-body">
+                <h3>Ahoyador Beaver AG52</h3>
+                <div class="meta">Marca: Beaver · Motor: Gasolina · 51.7cc</div>
+                <div class="precio-line"><div class="precio-oferta"></div><div class="precio-original"></div></div>
+                <div class="add-wrap"><button class="add-to-cart" aria-label="Agregar Ahoyador">Añadir al carrito</button></div>
+              </div>
+            </article>
+
+            <article class="producto-card"
+              data-titulo="Motosierra Husqvarna 125"
+              data-marca="Husqvarna"
+              data-tipo="Motosierra"
+              data-motor="Gasolina"
+              data-cilindraje="40"
+              data-precio-original="1009800"
+              data-precio-oferta="816000"
+              data-disponible="true"
+              data-eco="false"
+              data-terreno="piedemonte"
+              data-imgs="https://agro.unicorn.com.co/web/image/product.template/13325/image?unique=4a5c1fb"
+              data-desc="Potente, liviana y fácil de usar. Ideal para poda y tareas domésticas con excelente rendimiento y bajo consumo.">
+              <div class="producto-media"></div>
+              <div class="producto-body">
+                <h3>Motosierra Husqvarna 125</h3>
+                <div class="meta">Marca: Husqvarna · Motor: Gasolina · 40cc</div>
+                <div class="precio-line"><div class="precio-oferta"></div><div class="precio-original"></div></div>
+                <div class="add-wrap"><button class="add-to-cart">Añadir al carrito</button></div>
+              </div>
+            </article>
+
+            <article class="producto-card"
+              data-titulo="Motoazada diesel KTC 436-10E"
+              data-marca="KTC"
+              data-tipo="Motoazada"
+              data-motor="Diesel"
+              data-cilindraje="10"
+              data-precio-original="5885400"
+              data-precio-oferta="5885400"
+              data-disponible="true"
+              data-eco="false"
+              data-terreno="llanura"
+              data-imgs="https://agro.unicorn.com.co/web/image/product.template/12998/image?unique=c21933f"
+              data-desc="Robusta y eficiente, perfecta para labrar suelos duros con potencia y bajo consumo. Ideal para trabajos agrícolas intensivos.">
+              <div class="producto-media"></div>
+              <div class="producto-body">
+                <h3>Motoazada diesel KTC 436-10E</h3>
+                <div class="meta">Marca: KTC · Motor: Diesel</div>
+                <div class="precio-line"><div class="precio-oferta"></div><div class="precio-original"></div></div>
+                <div class="add-wrap"><button class="add-to-cart">Añadir al carrito</button></div>
+              </div>
+            </article>
+
+            <article class="producto-card"
+              data-titulo="Tractor cortacésped Husqvarna Giro Zero MZ54"
+              data-marca="Husqvarna"
+              data-tipo="Cortacésped"
+              data-motor="Gasolina"
+              data-cilindraje="726"
+              data-precio-original="49388400"
+              data-precio-oferta="49388400"
+              data-disponible="true"
+              data-eco="false"
+              data-terreno="llanura"
+              data-imgs="https://agro.unicorn.com.co/web/image/product.template/12787/image?unique=a0c1ea2"
+              data-desc="Potente y preciso, ofrece cortes profesionales con gran maniobrabilidad. Ideal para amplias áreas verdes y trabajos exigentes.">
+              <div class="producto-media"></div>
+              <div class="producto-body">
+                <h3>Tractor cortacésped Husqvarna Giro Zero MZ54</h3>
+                <div class="meta">Marca: Husqvarna · Motor: Gasolina · 726cc</div>
+                <div class="precio-line"><div class="precio-oferta"></div><div class="precio-original"></div></div>
+                <div class="add-wrap"><button class="add-to-cart">Añadir al carrito</button></div>
+              </div>
+            </article>
+
+            <article class="producto-card"
+              data-titulo="Guadañadora Stihl FS160"
+              data-marca="Stihl"
+              data-tipo="Guadañadora"
+              data-motor="Monocilíndrico de 2 tiempos"
+              data-cilindraje="29.8"
+              data-precio-original="1550400"
+              data-precio-oferta="1098082"
+              data-disponible="true"
+              data-eco="false"
+              data-terreno="piedemonte"
+              data-imgs="https://agro.unicorn.com.co/web/image/product.template/10933/image?unique=c621352"
+              data-desc="Resistente y potente, ideal para cortar pasto alto y maleza densa. Ofrece alto rendimiento y comodidad en uso prolongado.">
+              <div class="producto-media"></div>
+              <div class="producto-body">
+                <h3>Guadañadora Stihl FS160</h3>
+                <div class="meta">Marca: Stihl · Motor: Monocilíndrico de 2 tiempos · 29.8cc</div>
+                <div class="precio-line"><div class="precio-oferta"></div><div class="precio-original"></div></div>
+                <div class="add-wrap"><button class="add-to-cart">Añadir al carrito</button></div>
+              </div>
+            </article>
+
+            <article class="producto-card"
+              data-titulo="Cerca eléctrica El Cebú EC80Km"
+              data-marca="El Cebú"
+              data-tipo="Cerca"
+              data-motor="Eléctrico"
+              data-cilindraje="0"
+              data-precio-original="512200"
+              data-precio-oferta="512200"
+              data-disponible="false"
+              data-eco="true"
+              data-terreno="all"
+              data-imgs="https://agro.unicorn.com.co/web/image/product.template/866/image?unique=ba6bffb"
+              data-desc="Sistema de cerca eléctrica para control de ganado, alcance 80 km.">
+              <div class="producto-media"></div>
+              <div class="producto-body">
+                <h3>Cerca eléctrica El Cebú EC80Km</h3>
+                <div class="meta">Marca: El Cebú · Motor: Eléctrico</div>
+                <div class="precio-line"><div class="precio-oferta"></div><div class="precio-original"></div></div>
+                <div class="add-wrap"><button class="add-to-cart">Añadir al carrito</button></div>
+              </div>
+            </article>
+
+          </div>
+
+          <div id="noResults" class="no-results" hidden>Sin resultados que coincidan con los filtros.</div>
+        </section>
+      </main>
+
+      <!-- ASIDE FILTROS A LA DERECHA -->
+      <aside class="filtros" aria-label="Panel de filtros">
+        <h3>Filtrar resultados</h3>
+
+        <div class="filtro-group">
+          <label for="filterTerreno">Terreno Ideal</label>
+          <select id="filterTerreno" aria-label="Filtrar por terreno">
+            <option value="all">Cualquier terreno</option>
+            <option value="llanura">Llanura / Terreno Plano</option>
+            <option value="piedemonte">Piedemonte / Pendiente</option>
+          </select>
+        </div>
+
+        <div class="filtro-group">
+          <label for="filterTipo">Tipo</label>
+          <select id="filterTipo" aria-label="Filtrar por tipo">
+            <option value="all">Todos</option>
+            <option value="Ahoyador">Ahoyador</option>
+            <option value="Motosierra">Motosierra</option>
+            <option value="Motoazada">Motoazada</option>
+            <option value="Cortacésped">Cortacésped</option>
+            <option value="Guadañadora">Guadañadora</option>
+            <option value="Cerca">Cerca</option>
+          </select>
+        </div>
+
+        <div class="filtro-group">
+          <label for="filterMarca">Marca</label>
+          <select id="filterMarca" aria-label="Filtrar por marca">
+            <option value="all">Todas</option>
+            <option>Beaver</option>
+            <option>Stihl</option>
+            <option>KTC</option>
+            <option>Husqvarna</option>
+            <option>El Cebú</option>
+          </select>
+        </div>
+
+        <div class="filtro-group">
+          <label for="filterMotor">Motor</label>
+          <select id="filterMotor" aria-label="Filtrar por motor">
+            <option value="all">Todos</option>
+            <option>Gasolina</option>
+            <option>Eléctrico</option>
+            <option>Diesel</option>
+            <option>Monocilíndrico de 2 tiempos</option>
+          </select>
+        </div>
+
+        <div class="filtro-group">
+          <label for="filterCilindraje">Cilindraje</label>
+          <select id="filterCilindraje" aria-label="Filtrar por cilindraje">
+            <option value="all">Todos</option>
+            <option value="0">0 (manual / eléctrico)</option>
+            <option value="1-50">≤ 50</option>
+            <option value="51-300">51 - 300</option>
+            <option value="301-2000">301 - 2000</option>
+            <option value="2001-999999">2001+</option>
+          </select>
+        </div>
+
+        <div class="filtro-group">
+          <label for="filterPrecio">Precio</label>
+          <select id="filterPrecio" aria-label="Filtrar por precio">
+            <option value="all">Cualquier precio</option>
+            <option value="0-500000">Hasta $500.000</option>
+            <option value="500001-1000000">$500.001 - $1.000.000</option>
+            <option value="1000001-4000000">$1.000.001 - $4.000.000</option>
+            <option value="4000001-99999999">Más de $4.000.000</option>
+          </select>
+        </div>
+
+        <div class="filtro-group">
+          <label for="filterDisp">Disponibilidad</label>
+          <select id="filterDisp" aria-label="Filtrar por disponibilidad">
+            <option value="all">Todos</option>
+            <option value="true">En stock</option>
+            <option value="false">Agotado</option>
+          </select>
+        </div>
+
+        <div class="filtro-group">
+          <label for="searchInput">Buscar</label>
+          <input id="searchInput" placeholder="Buscar por nombre..." aria-label="Buscar productos">
+        </div>
+
+        <div class="filtros-actions">
+          <button id="applyBtn" class="btn-aplicar">Filtrar</button>
+          <button id="clearBtn" class="btn-limpiar">Limpiar</button>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- ================= MODAL ESPEJO APPLE ================= -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card" role="document">
+      <button class="modal-close" aria-label="Cerrar modal" id="modalClose">✖</button>
+      <div class="modal-main">
+        <img id="modalMainImg" alt="Imagen producto">
+        <div class="thumbs" id="modalThumbs" aria-hidden="false"></div>
+      </div>
+      <div class="modal-info">
+        <h2 id="modalTitle"></h2>
+        <p id="modalMeta" class="meta"></p>
+        <p id="modalDesc"></p>
+        <div id="modalPrice" class="modal-price"></div>
+        <button id="modalAddBtn" class="modal-add">Agregar al carrito</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= CHATBOT CON VOZ ================= -->
+  <div id="chat-toggle" title="¿Necesitas ayuda?">💬</div>
+  <div id="chat-container">
+    <div id="chat-header">
+      <span>Soporte UNICORN 🦄</span>
+      <span id="chat-close" style="cursor:pointer; font-size: 18px;">✖</span>
+    </div>
+    <div id="chat-messages"></div>
+    <div id="chat-input-area">
+      <input type="text" id="chat-input" placeholder="Escribe tu mensaje...">
+      <button id="chat-mic" title="Hablar por micrófono">🎤</button>
+      <button id="chat-send" title="Enviar">➤</button>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: auto;">
+      <div style="flex: 1 1 200px; margin: 20px; text-align: left;">
+        <h4 style="margin-bottom: 15px; color: #fff;">UNICORN</h4>
+        <p>Maquinaria de calidad para el campo colombiano desde 1995.</p>
+      </div>
+
+      <div style="flex: 1 1 150px; margin: 20px; text-align: left;">
+        <h4 style="margin-bottom: 15px; color: #fff;">Productos</h4>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 8px;"><a href="campo-jardin.html">Campo y Jardín</a></li>
+          <li style="margin-bottom: 8px;"><a href="manejo-agua.html">Manejo de Agua</a></li>
+          <li style="margin-bottom: 8px;"><a href="fumigacion.html">Fumigación</a></li>
+          <li style="margin-bottom: 8px;"><a href="manejo-energia.html">Manejo de Energía</a></li>
+          <li style="margin-bottom: 8px;"><a href="construccion.html">Construcción</a></li>
+          <li style="margin-bottom: 8px;"><a href="ferreteria.html">Ferretería</a></li>
+        </ul>
+      </div>
+
+      <div style="flex: 1 1 150px; margin: 20px; text-align: left;">
+        <h4 style="margin-bottom: 15px; color: #fff;">Empresa</h4>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 8px;"><a href="#">Sobre nosotros</a></li>
+          <li style="margin-bottom: 8px;"><a href="#">Sucursales</a></li>
+          <li style="margin-bottom: 8px;"><a href="#">Blog</a></li>
+          <li style="margin-bottom: 8px;"><a href="#">Trabaja con nosotros</a></li>
+        </ul>
+      </div>
+
+      <div style="flex: 1 1 150px; margin: 20px; text-align: left;">
+        <h4 style="margin-bottom: 15px; color: #fff;">Soporte</h4>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 8px;"><a href="#">Contacto</a></li>
+          <li style="margin-bottom: 8px;"><a href="#">Garantía</a></li>
+          <li style="margin-bottom: 8px;"><a href="#">Manuales</a></li>
+          <li style="margin-bottom: 8px;"><a href="#">Centro técnico</a></li>
+        </ul>
+      </div>
+
+      <div style="flex: 1 1 200px; margin: 20px; text-align: left;" class="footer-social">
+        <h4 style="margin-bottom: 15px; color: #fff;">Síguenos</h4>
+        <div style="margin: 10px 0; display: flex; gap: 15px;">
+          <a href="https://www.facebook.com/agrounicorn.bogota" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook"></a>
+          <a href="https://www.instagram.com/agro_unicorn" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram"></a>
+          <a href="https://www.tiktok.com/@agro_unicorn" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" alt="TikTok"></a>
+          <a href="https://www.youtube.com/@agro-unicorn" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube"></a>
+        </div>
+      </div>
+    </div>
+
+    <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px; padding-top: 20px; text-align: center; color: #777;">
+      © 2026 UNICORN. Todos los derechos reservados. | <a href="#" style="color: #777; text-decoration: none;">Política de privacidad</a>
+    </div>
+  </footer>
+
+<script>
+/* ------------------ UTIL ------------------ */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+function formatCOP(n){ if(isNaN(n)) return n; return n.toLocaleString('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}); }
+
+/* ------------------ ELEMENTOS JS ORIGINALES INTACTOS ------------------ */
+const grid = $('#productosGrid');
+const cards = () => $$('.producto-card');
+const resultadoCount = $('#resultadoCount');
+const noResults = $('#noResults');
+const spinnerCls = 'spinner-overlay';
+const ordenSel = $('#orden');
+
+// NUEVO FILTRO TERRENO
+const filterTerreno = $('#filterTerreno');
+const filterTipo = $('#filterTipo');
+const filterMarca = $('#filterMarca');
+const filterMotor = $('#filterMotor');
+const filterCilindraje = $('#filterCilindraje');
+const filterPrecio = $('#filterPrecio');
+const filterDisp = $('#filterDisp');
+const searchInput = $('#searchInput');
+const applyBtn = $('#applyBtn');
+const clearBtn = $('#clearBtn');
+
+/* MODAL */
+const modal = $('#modal');
+const modalMainImg = $('#modalMainImg');
+const modalThumbs = $('#modalThumbs');
+const modalTitle = $('#modalTitle');
+const modalDesc = $('#modalDesc');
+const modalMeta = $('#modalMeta');
+const modalPrice = $('#modalPrice');
+const modalAddBtn = $('#modalAddBtn');
+const modalClose = $('#modalClose');
+
+let currentProduct = null;
+
+/* ------------------ RENDER INICIAL TARJETAS (SIN HOVER DE SEGUNDA IMAGEN) ------------------ */
+function initCards(){
+  $$('.producto-card').forEach((card, idx) => {
+    card.dataset.index = idx; 
+    const media = card.querySelector('.producto-media');
+    media.innerHTML = '';
+    const imgsAttr = (card.dataset.imgs || '').trim();
+    const imgs = imgsAttr ? imgsAttr.split(',').map(s=>s.trim()) : [];
+    
+    // Solo carga la imagen principal
+    const mainImg = document.createElement('img');
+    mainImg.src = imgs[0] || (card.dataset.img || '');
+    mainImg.alt = card.dataset.titulo || '';
+    mainImg.loading = 'lazy';
+    media.appendChild(mainImg);
+
+    // Badge de Descuento
+    let badge = media.querySelector('.producto-badge');
+    if(!badge){ badge = document.createElement('div'); badge.className = 'producto-badge'; media.appendChild(badge); }
+    const orig = Number(card.dataset.precioOriginal) || 0;
+    const of = Number(card.dataset.precioOferta) || orig;
+    const ofertaEl = card.querySelector('.precio-oferta');
+    const origEl = card.querySelector('.precio-original');
+    
+    if(of < orig){
+      const disc = Math.round(((orig - of)/orig)*100);
+      badge.textContent = `-${disc}%`;
+      ofertaEl.textContent = formatCOP(of);
+      origEl.textContent = formatCOP(orig);
+    } else {
+      badge.textContent = '';
+      ofertaEl.textContent = formatCOP(of);
+      origEl.textContent = '';
+      badge.style.display = badge.textContent ? 'block' : 'none';
+    }
+
+    // Badge Sostenible (Eco)
+    if(card.dataset.eco === 'true') {
+      const ecoBadge = document.createElement('div');
+      ecoBadge.className = 'eco-badge';
+      ecoBadge.innerHTML = '🌿 Eco';
+      media.appendChild(ecoBadge);
+    }
+
+    if(card.dataset.disponible === 'false'){ card.style.opacity = '.55' } else { card.style.opacity = '1' }
+
+    card.addEventListener('click', (e)=>{
+      if(e.target.closest('.add-to-cart')) return;
+      openModalForCard(card);
+    });
+  });
+}
+
+/* ------------------ MODAL ORIGINAL INTACTO ------------------ */
+function openModalForCard(card){
+  currentProduct = {
+    titulo: card.dataset.titulo,
+    marca: card.dataset.marca,
+    tipo: card.dataset.tipo,
+    motor: card.dataset.motor,
+    cilindraje: card.dataset.cilindraje,
+    imgs: (card.dataset.imgs || '').split(',').map(s=>s.trim()).filter(Boolean),
+    desc: card.dataset.desc || '',
+    precioNum: Number(card.dataset.precioOferta || card.dataset.precioOriginal) || 0
+  };
+  const imgs = currentProduct.imgs.length ? currentProduct.imgs : [(card.dataset.img || '')];
+  modalMainImg.src = imgs[0] || '';
+  modalThumbs.innerHTML = '';
+  imgs.forEach((u,i)=>{
+    const t = document.createElement('img');
+    t.src = u;
+    t.alt = `${currentProduct.titulo} ${i+1}`;
+    t.loading = 'lazy';
+    if(i===0) t.classList.add('selected');
+    t.addEventListener('click', ()=> {
+      modalMainImg.src = u;
+      modalThumbs.querySelectorAll('img').forEach(x=>x.classList.remove('selected'));
+      t.classList.add('selected');
+    });
+    modalThumbs.appendChild(t);
+  });
+
+  modalTitle.textContent = currentProduct.titulo;
+  modalMeta.textContent = `Marca: ${currentProduct.marca} · Tipo: ${currentProduct.tipo} · Motor: ${currentProduct.motor} · Cilindraje: ${currentProduct.cilindraje}`;
+  modalDesc.textContent = currentProduct.desc;
+  modalPrice.textContent = formatCOP(currentProduct.precioNum);
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden','false');
+  document.body.style.overflow = 'hidden';
+}
+
+modalClose.addEventListener('click', closeModal);
+modal.addEventListener('click', (e)=> { if(e.target === modal) closeModal() });
+function closeModal(){ modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); document.body.style.overflow = ''; currentProduct = null; }
+
+modalAddBtn.addEventListener('click', ()=>{
+  if(!currentProduct) return;
+  addToCart({
+    titulo: currentProduct.titulo,
+    imagen: (currentProduct.imgs && currentProduct.imgs[0]) || '',
+    precio: formatCOP(currentProduct.precioNum)
+  });
+  closeModal();
+});
+
+/* ------------------ CARRITO (localStorage) ORIGINAL ------------------ */
+function getCart(){ return JSON.parse(localStorage.getItem('carrito')) || [] }
+function saveCart(c){ localStorage.setItem('carrito', JSON.stringify(c)) }
+
+function actualizarContador(){
+  const c = getCart();
+  const total = c.reduce((s,i)=> s + (i.cantidad||0), 0);
+  const badge = $('#contadorCarrito');
+  if(!badge) return;
+  badge.textContent = total;
+  if(total > 0) {
+    badge.classList.add('mostrar');
+    badge.style.display = 'flex';
+  } else {
+    badge.classList.remove('mostrar');
+    badge.style.display = 'none';
+  }
+}
+
+function addToCart(prod){
+  if(!prod || !prod.titulo) return;
+  const carrito = getCart();
+  const existe = carrito.find(p=>p.titulo === prod.titulo);
+  if(existe) existe.cantidad++;
+  else carrito.push({...prod, cantidad:1});
+  saveCart(carrito);
+  actualizarContador();
+  toast(`🛒 ${prod.titulo} agregado al carrito`);
+  
+  const icono = document.querySelector("#carritoLink .icono-carrito");
+  if (icono) {
+    icono.style.animation = "none";
+    void icono.offsetWidth;
+    icono.style.animation = "vibrarCarrito 0.4s ease";
+  }
+}
+
+$$('.producto-card .add-to-cart').forEach(btn=>{
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    const card = btn.closest('.producto-card');
+    const producto = {
+      titulo: card.dataset.titulo,
+      imagen: (card.dataset.imgs || '').split(',').map(s=>s.trim())[0] || card.dataset.img || '',
+      precio: formatCOP(Number(card.dataset.precioOferta || card.dataset.precioOriginal) || 0)
+    };
+    addToCart(producto);
+  });
+});
+
+/* ------------------ FILTRADO Y JS ORIGINAL (Con Filtro Terreno) ------------------ */
+function showSpinner(){
+  if(grid.querySelector('.spinner-overlay')) return;
+  const ov = document.createElement('div');
+  ov.className = 'spinner-overlay';
+  ov.innerHTML = '<div class="spinner" role="status" aria-hidden="true"></div>';
+  grid.appendChild(ov);
+}
+function hideSpinner(){ const o = grid.querySelector('.spinner-overlay'); if(o) o.remove(); }
+
+function parseCilindrajeRange(val){
+  if(val === 'all') return null;
+  if(val === '0') return {min:0,max:0};
+  if(val.includes('-')){ const [a,b]=val.split('-').map(Number); return {min:a,max:b} }
+  return null;
+}
+
+function applyFilters({pushURL=true} = {}){
+  showSpinner();
+  setTimeout(()=>{
+    const terreno = filterTerreno.value; 
+    const tipo = filterTipo.value;
+    const marca = filterMarca.value;
+    const motor = filterMotor.value;
+    const cil = filterCilindraje.value;
+    const precioR = filterPrecio.value;
+    const disp = filterDisp.value;
+    const texto = (searchInput.value || '').trim().toLowerCase();
+    const orden = ordenSel.value;
+
+    let list = cards();
+    list.forEach(c=> c.style.display = 'none');
+
+    list = list.filter(c=>{
+      // Filtro Terreno
+      if(terreno !== 'all') {
+        const prodTerreno = (c.dataset.terreno || 'all').toLowerCase();
+        if(prodTerreno !== 'all' && prodTerreno !== terreno) return false;
+      }
+
+      if(tipo !== 'all' && c.dataset.tipo.toLowerCase() !== tipo.toLowerCase()) return false;
+      if(marca !== 'all' && c.dataset.marca.toLowerCase() !== marca.toLowerCase()) return false;
+      if(motor !== 'all' && c.dataset.motor.toLowerCase() !== motor.toLowerCase()) return false;
+      if(disp !== 'all' && String(c.dataset.disponible) !== disp) return false;
+      if(texto && !(c.dataset.titulo || '').toLowerCase().includes(texto)) return false;
+      
+      const cilRange = parseCilindrajeRange(cil);
+      if(cilRange){
+        const val = Number(c.dataset.cilindraje || 0);
+        if(val < cilRange.min || val > cilRange.max) return false;
+      }
+      
+      if(precioR !== 'all'){
+        const [pmin,pmax] = precioR.split('-').map(Number);
+        const p = Number(c.dataset.precioOferta || c.dataset.precioOriginal) || 0;
+        if(p < pmin || p > pmax) return false;
+      }
+      return true;
+    });
+
+    if(orden === 'menor'){
+      list.sort((a,b)=> Number(a.dataset.precioOferta || a.dataset.precioOriginal) - Number(b.dataset.precioOferta || b.dataset.precioOriginal));
+    } else if(orden === 'mayor'){
+      list.sort((a,b)=> Number(b.dataset.precioOferta || b.dataset.precioOriginal) - Number(a.dataset.precioOferta || a.dataset.precioOriginal));
+    } else {
+      list.sort((a,b)=> Number(a.dataset.index || 0) - Number(b.dataset.index || 0));
+    }
+
+    list.forEach(c => { c.style.display = 'flex'; grid.appendChild(c); });
+
+    resultadoCount.textContent = `Mostrando ${list.length} producto${list.length!==1?'s':''}`;
+    noResults.hidden = list.length > 0;
+
+    if(pushURL) syncURLWithFilters();
+    setTimeout(hideSpinner, 220);
+  }, 280);
+}
+
+function syncURLWithFilters(){
+  const params = new URLSearchParams();
+  if(filterTerreno.value !== 'all') params.set('terreno', filterTerreno.value); 
+  if(filterTipo.value !== 'all') params.set('tipo', filterTipo.value);
+  if(filterMarca.value !== 'all') params.set('marca', filterMarca.value);
+  if(filterMotor.value !== 'all') params.set('motor', filterMotor.value);
+  if(filterCilindraje.value !== 'all') params.set('cil', filterCilindraje.value);
+  if(filterPrecio.value !== 'all') params.set('precio', filterPrecio.value);
+  if(filterDisp.value !== 'all') params.set('disp', filterDisp.value);
+  if(ordenSel.value !== 'relevancia') params.set('orden', ordenSel.value);
+  const text = (searchInput.value || '').trim();
+  if(text) params.set('q', text);
+  const qs = params.toString();
+  history.replaceState(null,'', qs ? `?${qs}` : location.pathname);
+}
+
+function restoreFiltersFromURL(){
+  const p = new URLSearchParams(location.search);
+  if(p.has('terreno')) filterTerreno.value = p.get('terreno'); 
+  if(p.has('tipo')) filterTipo.value = p.get('tipo');
+  if(p.has('marca')) filterMarca.value = p.get('marca');
+  if(p.has('motor')) filterMotor.value = p.get('motor');
+  if(p.has('cil')) filterCilindraje.value = p.get('cil');
+  if(p.has('precio')) filterPrecio.value = p.get('precio');
+  if(p.has('disp')) filterDisp.value = p.get('disp');
+  if(p.has('orden')) ordenSel.value = p.get('orden');
+  if(p.has('q')) searchInput.value = p.get('q');
+}
+
+function debounce(fn,ms=220){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms) } }
+
+/* ------------------ TOAST ORIGINAL ------------------ */
+function toast(msg){
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  requestAnimationFrame(()=> el.style.opacity = '1');
+  setTimeout(()=>{ el.style.opacity = '0'; setTimeout(()=>el.remove(),220) },1600);
+}
+
+/* ------------------ INICIALIZACION ORIGINAL ------------------ */
+document.addEventListener('DOMContentLoaded', ()=>{
+  initCards();
+  restoreFiltersFromURL();
+  
+  applyBtn.addEventListener('click', ()=>applyFilters({pushURL:true}));
+  clearBtn.addEventListener('click', ()=>{
+    filterTerreno.value='all'; 
+    filterTipo.value='all'; filterMarca.value='all'; filterMotor.value='all'; filterCilindraje.value='all';
+    filterPrecio.value='all'; filterDisp.value='all'; searchInput.value=''; ordenSel.value='relevancia';
+    applyFilters({pushURL:true});
+  });
+
+  searchInput.addEventListener('input', debounce(()=>applyFilters({pushURL:true}),200));
+  filterTerreno.addEventListener('change', ()=>applyFilters({pushURL:true})); 
+  filterTipo.addEventListener('change', ()=>applyFilters({pushURL:true}));
+  filterMarca.addEventListener('change', ()=>applyFilters({pushURL:true}));
+  filterMotor.addEventListener('change', ()=>applyFilters({pushURL:true}));
+  filterCilindraje.addEventListener('change', ()=>applyFilters({pushURL:true}));
+  filterPrecio.addEventListener('change', ()=>applyFilters({pushURL:true}));
+  filterDisp.addEventListener('change', ()=>applyFilters({pushURL:true}));
+  ordenSel.addEventListener('change', ()=>applyFilters({pushURL:true}));
+
+  applyFilters({pushURL:false});
+  actualizarContador();
+
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+});
+
+/* ------------------ MODO OSCURO SINCRONIZADO ------------------ */
+function toggleDark() {
+  document.documentElement.classList.toggle('dark-mode');
+  if (document.documentElement.classList.contains('dark-mode')) {
+    localStorage.setItem('modo-oscuro', 'activado');
+  } else {
+    localStorage.setItem('modo-oscuro', 'desactivado');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('modo-oscuro') === 'activado') {
+    document.documentElement.classList.add('dark-mode');
+  }
+});
+
+/* ------------------ LÓGICA DEL CHAT CON VOZ ------------------ */
+const toggleChat = document.getElementById("chat-toggle");
+const chatContainer = document.getElementById("chat-container");
+const closeBtnChat = document.getElementById("chat-close");
+const inputChat = document.getElementById("chat-input");
+const messagesChat = document.getElementById("chat-messages");
+const sendBtnChat = document.getElementById("chat-send");
+const micBtnChat = document.getElementById("chat-mic");
+
+let isChatOpen = false;
+
+if(toggleChat) {
+  toggleChat.onclick = () => {
+    chatContainer.style.display = "flex";
+    if(!isChatOpen) {
+      const saludo = "👋 ¡Hola! Soy el asistente de Agro UNICORN. ¿Buscas alguna herramienta de Campo y Jardín? Puedes escribirme o usar el micrófono.";
+      addMessage(saludo, "bot", true);
+      speakText("Hola! Soy el asistente de Agro Iunicorn. ¿Buscas alguna herramienta de Campo y Jardín?");
+      isChatOpen = true;
+    }
+  };
+}
+if(closeBtnChat) closeBtnChat.onclick = () => { 
+  chatContainer.style.display = "none"; 
+  window.speechSynthesis.cancel(); 
+};
+
+if(inputChat) {
+  inputChat.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") sendMessage();
+  });
+}
+if(sendBtnChat) sendBtnChat.addEventListener("click", sendMessage);
+
+let recognition;
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.lang = 'es-CO'; 
+  recognition.interimResults = false;
+
+  recognition.onstart = function() {
+    micBtnChat.classList.add("listening");
+    inputChat.placeholder = "Escuchando...";
+  };
+
+  recognition.onresult = function(event) {
+    const transcript = event.results[0][0].transcript;
+    inputChat.value = transcript;
+    sendMessage(); 
+  };
+
+  recognition.onerror = function(event) {
+    console.error("Error de micrófono: ", event.error);
+    micBtnChat.classList.remove("listening");
+    inputChat.placeholder = "Escribe tu mensaje...";
+  };
+
+  recognition.onend = function() {
+    micBtnChat.classList.remove("listening");
+    inputChat.placeholder = "Escribe tu mensaje...";
+  };
+
+  if(micBtnChat) {
+    micBtnChat.onclick = () => {
+      if (micBtnChat.classList.contains("listening")) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    };
+  }
+} else {
+  if(micBtnChat) micBtnChat.style.display = 'none'; 
+}
+
+function speakText(text) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel(); 
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = text;
+    const cleanText = tempDiv.textContent || tempDiv.innerText || "";
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'es-CO';
+    utterance.rate = 1.05; 
+    window.speechSynthesis.speak(utterance);
+  }
+}
+
+function sendMessage() {
+  const text = inputChat.value.trim();
+  if (!text) return;
+  addMessage(text, "user");
+  inputChat.value = "";
+  
+  const div = document.createElement("div");
+  div.classList.add("typing");
+  div.id = "typing-indicator";
+  div.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  messagesChat.appendChild(div);
+  messagesChat.scrollTop = messagesChat.scrollHeight;
+
+  setTimeout(() => {
+    const typing = document.getElementById("typing-indicator");
+    if(typing) typing.remove();
+    const responseHTML = botResponse(text);
+    addMessage(responseHTML, "bot", true);
+    speakText(responseHTML); 
+  }, 1200); 
+}
+
+function addMessage(text, type, isHtml = false) {
+  const div = document.createElement("div");
+  div.classList.add("msg", type);
+  if(isHtml) { div.innerHTML = text; } else { div.textContent = text; }
+  messagesChat.appendChild(div);
+  messagesChat.scrollTop = messagesChat.scrollHeight;
+}
+
+function botResponse(text) {
+  let t = text.toLowerCase();
+  if (t.includes("hola") || t.includes("buen") || t.includes("saludo")) {
+    return "👋 ¡Hola! Qué gusto saludarte. Cuéntame, ¿qué herramienta de campo o jardín buscas hoy?";
+  }
+  if (t.includes("envio") || t.includes("envío") || t.includes("domicilio") || t.includes("llegan")) {
+    return "🚚 <b>Hacemos envíos a toda Colombia.</b><br>El tiempo de entrega es de 2 a 5 días hábiles. ¡Agrega productos al carrito para ver detalles!";
+  }
+  if (t.includes("pago") || t.includes("pagar") || t.includes("tarjeta") || t.includes("efectivo") || t.includes("pse")) {
+    return "💳 <b>Métodos de pago aceptados:</b><br>- Tarjetas de Crédito/Débito.<br>- Transferencia (PSE).<br>- Pago Contraentrega (según zona).";
+  }
+  if (t.includes("precio") || t.includes("costo") || t.includes("vale")) {
+    return "💰 Los precios de nuestras herramientas están a un lado de cada producto. Puedes usar los filtros para ordenar por menor precio.";
+  }
+  if (t.includes("garantia") || t.includes("garantía") || t.includes("daño") || t.includes("respaldo")) {
+    return "🛡️ <b>Garantía total:</b> Todos los equipos cuentan con respaldo directo (6 meses a 2 años según la marca) y acceso a nuestra red técnica.";
+  }
+  if (t.includes("asesor") || t.includes("contacto") || t.includes("whatsapp") || t.includes("humano")) {
+    return "📞 Claro, para atención personalizada escríbenos al WhatsApp o llama al <b>+57 300 000 0000</b>.";
+  }
+  if (t.includes("gracias") || t.includes("amable") || t.includes("listo") || t.includes("ok")) {
+    return "¡Con todo el gusto! 🦄 Aquí estaré por si necesitas algo más.";
+  }
+  return "🤖 Mmm... no estoy seguro. Intenta buscar en el panel de filtros a la izquierda o pregúntame sobre 'Envíos' y 'Pagos'.";
+}
+</script>
+</body>
+</html>
